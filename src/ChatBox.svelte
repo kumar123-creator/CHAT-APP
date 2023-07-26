@@ -1,4 +1,6 @@
 <script>
+     import { fade } from 'svelte/transition';
+
     export let messages;
     export let sendMessage;
     export let userName;
@@ -21,8 +23,8 @@
   </script>
   
   <div class="chat-box">
-    {#each messages as message}
-      <div class="message">
+    {#each messages as message }
+      <div class="message" transition:fade>
         <p class="message-sender">{message.sender}:</p>
         <p class="message-content">{message.content}</p>
         <small class="message-timestamp">{message.timestamp}</small>
@@ -50,7 +52,17 @@
       border-radius: 4px;
       padding: 10px;
       margin-bottom: 10px;
+      animation: fade-in 0.3s;
     }
+
+    @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
   
     .message p {
       margin: 0;

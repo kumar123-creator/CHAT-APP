@@ -102,12 +102,14 @@
 	document.querySelector('.input-box').classList.add('error');
   }
 
+
   function clearError() {
     errorMessage = '';
 	document.querySelector('.input-box').classList.remove('error');
   }
 
 	
+  
 	function joinChat() {
 	  if (userName.length > 1) {
 		// Send user information to the server
@@ -169,7 +171,34 @@
 	.input-box {
 	  display: flex;
 	  margin-bottom: 20px;
+	  animation: slide-up 0.3s;
 	}
+
+	.input-box.joined {
+    animation: slide-down 0.3s;
+  }
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-down {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+  }
   
 	input {
 	  flex: 1;
