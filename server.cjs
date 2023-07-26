@@ -10,10 +10,12 @@ const messages = [];
 const onlineUsers = new Set();
 
 wss.on('connection', (ws) => {
+  console.log('New client connected.');
   ws.on('message', (message) => {
     const data = JSON.parse(message);
 
     if (data.type === 'user') {
+      ws.userName = data.user;
       onlineUsers.add(data.user);
       broadcastUserList();
     } else {

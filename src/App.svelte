@@ -11,6 +11,7 @@
   
 	ws.onmessage = (event) => {
 	  const data = JSON.parse(event.data);
+	  console.log('Received data:', data); // Add this line to debug
 	  if (Array.isArray(data)) {
 		messages = data;
 	  } else if (data.type === 'userList') {
@@ -36,6 +37,17 @@
   
 	  ws.send(JSON.stringify({ ...message, sender: userName }));
 	}
+
+	function joinChat() {
+    if (userName.length > 1) {
+      // Send user information to the server
+      ws.send(JSON.stringify({ type: 'user', user: userName }));
+      hasJoinedChat = true;
+    } else {
+      console.log('Please enter your name before joining the chat.');
+    }
+  }
+
   </script>
   
   <main>
@@ -44,7 +56,7 @@
 	{#if !hasJoinedChat}
 	  <div class="input-box">
 		<input type="text" bind:value={userName} placeholder="Enter your name" />
-		<button on:click={() => (userName.length > 1 && (hasJoinedChat = true))}>Join Chat</button>
+		<button on:click={joinChat}>Join Chat</button>
 	  </div>
 	{:else}
 	  <div class="chat-container">
