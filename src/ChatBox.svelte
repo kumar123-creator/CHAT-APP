@@ -8,6 +8,7 @@
     function handleSubmit() {
       if (newMessage.trim() !== '') {
         sendMessage({
+          type: 'message', // Add the 'type' property to distinguish between user info and messages
           sender: userName,
           content: newMessage,
           timestamp: new Date().toISOString(),
@@ -16,6 +17,7 @@
         newMessage = '';
       }
     }
+
   </script>
   
   <div class="chat-box">

@@ -1,21 +1,30 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	import ChatBox from './ChatBox.svelte';
-  
-	const ws = new WebSocket('ws://localhost:5000');
-  
+	import ErrorMessage from './ErrorMessage.svelte';
+
 	let messages = [];
 	let userName = '';
 	let hasJoinedChat = false;
 	let onlineUsers = [];
+	let errorMessage = '';
+	let isNewMessageNotificationEnabled = false; // Add this flag
+
+	const ws = new WebSocket('ws://localhost:5000');
+	const maxMessageLength = 2;
   
 	ws.onmessage = (event) => {
 	  const data = JSON.parse(event.data);
-	  console.log('Received data:', data); // Add this line to debug
+	  console.log('Received data:', data); 
 	  if (Array.isArray(data)) {
 		messages = data;
 	  } else if (data.type === 'userList') {
 		onlineUsers = data.users;
+	  } else if (data.type === 'message') {
+		messages.push(data);
+		if (!document.hasFocus() && isNewMessageNotificationEnabled) {
+		  showNewMessageNotification(data.sender, data.content);
+		}
 	  }
 	};
   
@@ -29,25 +38,86 @@
 	  };
 	});
   
-	function sendMessage(message) {
-	  if (!userName.trim()) {
-		console.log('Please enter your name before sending messages.');
-		return;
+	// Function to show a browser notification for new messages
+	function showNewMessageNotification(sender, content) {
+	  if (Notification.permission === 'granted') {
+		const notification = new Notification(`New message from ${sender}`, {
+		  body: content,
+		});
 	  }
-  
-	  ws.send(JSON.stringify({ ...message, sender: userName }));
 	}
+  
+	// Request permission to show notifications
+	function requestNotificationPermission() {
+	  Notification.requestPermission().then((permission) => {
+		isNewMessageNotificationEnabled = permission === 'granted';
+	  });
+	}
+  
+	// Check if the page is focused or not
+	let isPageFocused = true;
+  
+	window.addEventListener('focus', () => {
+	  isPageFocused = true;
+	});
+  
+	window.addEventListener('blur', () => {
+	  isPageFocused = false;
+	});
+	
+	// This will update isNewMessageNotificationEnabled when the permission is already granted or denied
+	afterUpdate(() => {
+	  isNewMessageNotificationEnabled = Notification.permission === 'granted';
+	});
+  
 
-	function joinChat() {
-    if (userName.length > 1) {
-      // Send user information to the server
-      ws.send(JSON.stringify({ type: 'user', user: userName }));
-      hasJoinedChat = true;
-    } else {
-      console.log('Please enter your name before joining the chat.');
+	function sendMessage(message) {
+    if (!userName.trim()) {
+      showError('Please enter your name before sending messages.');
+      return;
+    }
+
+    if (message.content.trim() === '') {
+      showError('Please enter a non-empty message.');
+      return;
+    }
+
+    if (message.content.length > maxMessageLength) {
+      showError(`Message length should be less than ${maxMessageLength} characters.`);
+      return;
+    }
+
+    clearError();
+    try {
+      ws.send(JSON.stringify({ ...message, sender: userName }));
+    } catch (error) {
+      console.error('Error sending message:', error);
+      // Handle the error, e.g., display a notification to the user about the failure.
+      showError('Failed to send the message. Please try again later.');
     }
   }
 
+  function showError(message) {
+    errorMessage = message;
+	document.querySelector('.input-box').classList.add('error');
+  }
+
+  function clearError() {
+    errorMessage = '';
+	document.querySelector('.input-box').classList.remove('error');
+  }
+
+	
+	function joinChat() {
+	  if (userName.length > 1) {
+		// Send user information to the server
+		ws.send(JSON.stringify({ type: 'user', user: userName }));
+		hasJoinedChat = true;
+		requestNotificationPermission();
+	  } else {
+		console.log('Please enter your name before joining the chat.');
+	  }
+	}
   </script>
   
   <main>
@@ -67,8 +137,12 @@
 		  {/each}
 		</div>
 		<ChatBox {messages} {sendMessage} {userName} />
-	  </div>
+		{#if errorMessage}
+		 <ErrorMessage message={errorMessage} onClose={clearError} />
+	  {/if}  
+	</div>
 	{/if}
+
   </main>
   
   <style>

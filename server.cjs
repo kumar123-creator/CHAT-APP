@@ -12,6 +12,7 @@ const onlineUsers = new Set();
 wss.on('connection', (ws) => {
   console.log('New client connected.');
   ws.on('message', (message) => {
+    try {
     const data = JSON.parse(message);
 
     if (data.type === 'user') {
@@ -22,6 +23,11 @@ wss.on('connection', (ws) => {
       messages.push(data);
       broadcastMessages();
     }
+  }catch (error) {
+    console.error('Error parsing incoming message:', error);
+    // Handle the error, e.g., notify the client about the error.
+    ws.send(JSON.stringify({ type: 'error', message: 'Error processing the message.' }));
+  }
   });
 
   ws.on('close', () => {
