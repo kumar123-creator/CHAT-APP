@@ -8,7 +8,7 @@
 	let hasJoinedChat = false;
 	let onlineUsers = [];
 	let errorMessage = '';
-	let isNewMessageNotificationEnabled = false; // Add this flag
+	let isNewMessageNotificationEnabled = false; 
 
 	const ws = new WebSocket('ws://localhost:5000');
 	const maxMessageLength = 2;
@@ -165,7 +165,7 @@
 	h1 {
 	  text-align: center;
 	  margin-bottom: 20px;
-	  color: darkblue;
+	  color: #007bff;
 	}
   
 	.input-box {
@@ -173,38 +173,36 @@
 	  margin-bottom: 20px;
 	  animation: slide-up 0.3s;
 	}
-
-	.input-box.joined {
-    animation: slide-down 0.3s;
-  }
-
-  @keyframes slide-up {
-    from {
-      transform: translateY(50px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes slide-down {
-    from {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateY(50px);
-      opacity: 0;
-    }
-  }
   
-	input {
+	@keyframes slide-up {
+	  from {
+		transform: translateY(50px);
+		opacity: 0;
+	  }
+	  to {
+		transform: translateY(0);
+		opacity: 1;
+	  }
+	}
+  
+	@keyframes slide-down {
+	  from {
+		transform: translateY(0);
+		opacity: 1;
+	  }
+	  to {
+		transform: translateY(50px);
+		opacity: 0;
+	  }
+	}
+  
+	input[type="text"] {
 	  flex: 1;
 	  padding: 10px;
 	  border: 1px solid #ccc;
 	  border-radius: 4px;
+	  font-size: 16px;
+	  outline: none;
 	}
   
 	button {
@@ -214,11 +212,12 @@
 	  color: #fff;
 	  border-radius: 4px;
 	  cursor: pointer;
-	  margin-left: 8px;
+	  font-size: 16px;
+	  transition: background-color 0.3s;
 	}
   
 	button:hover {
-	  background-color: green;
+	  background-color: #0056b3;
 	}
   
 	.chat-container {
@@ -239,7 +238,7 @@
 	.user-list h3 {
 	  margin: 0;
 	  margin-bottom: 10px;
-	  color: purple;
+	  color: #007bff;
 	}
   
 	.user-list p {
@@ -247,4 +246,3 @@
 	  margin-bottom: 5px;
 	}
   </style>
-  

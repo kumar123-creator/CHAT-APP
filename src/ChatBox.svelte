@@ -49,20 +49,20 @@
   
     .message {
       background-color: #f5f5f5;
-      border-radius: 4px;
+      border-radius: 8px;
       padding: 10px;
       margin-bottom: 10px;
       animation: fade-in 0.3s;
     }
-
+  
     @keyframes fade-in {
-    from {
-      opacity: 0;
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
-    to {
-      opacity: 1;
-    }
-  }
   
     .message p {
       margin: 0;
@@ -89,11 +89,13 @@
       margin-top: 10px;
     }
   
-    input {
+    input[type="text"] {
       flex: 1;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-size: 16px;
+      outline: none;
     }
   
     button {
@@ -103,7 +105,8 @@
       color: #fff;
       border-radius: 4px;
       cursor: pointer;
-      margin-left: 8px;
+      font-size: 16px;
+      transition: background-color 0.3s;
     }
   
     button:hover {
