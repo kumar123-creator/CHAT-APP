@@ -11,7 +11,7 @@
 	let isNewMessageNotificationEnabled = false; 
 
 	const ws = new WebSocket('ws://localhost:5000');
-	const maxMessageLength = 2;
+	const maxMessageLength = 10;
   
 	ws.onmessage = (event) => {
 	  const data = JSON.parse(event.data);
