@@ -165,7 +165,7 @@
 	h1 {
 	  text-align: center;
 	  margin-bottom: 20px;
-	  color: #007bff;
+	  color: darkblue;
 	}
   
 	.input-box {
@@ -238,7 +238,7 @@
 	.user-list h3 {
 	  margin: 0;
 	  margin-bottom: 10px;
-	  color: #007bff;
+	  color: purple;
 	}
   
 	.user-list p {
